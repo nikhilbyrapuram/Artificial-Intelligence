@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assistant Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .chat-container {
+            width: 350px;
+            height: 500px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .chat-header {
+            background: #4285F4;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            font-size: 18px;
+        }
+        .chat-box {
+            flex: 1;
+            padding: 10px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+        }
+        .user-message, .bot-message {
+            max-width: 75%;
+            padding: 10px;
+            border-radius: 10px;
+            margin: 5px 10px;
+            font-size: 14px;
+        }
+        .user-message {
+            background: #DCF8C6;
+            align-self: flex-end;
+        }
+        .bot-message {
+            background: #E5E5E5;
+            align-self: flex-start;
+        }
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            background: white;
+            border-top: 1px solid #ddd;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            outline: none;
+            border-radius: 20px;
+            background: #f1f1f1;
+        }
+        button {
+            margin-left: 10px;
+            padding: 10px;
+            border: none;
+            background: #4285F4;
+            color: white;
+            border-radius: 50%;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+        }
+        button:hover {
+            background: #357ae8;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">Campus FAQ'S Chatbot 🤖</div>
+        <div class="chat-box" id="chat-box">
+            <div class="bot-message">Hello! How can I help you?</div>
+        </div>
+        <div class="chat-input">
+            <input type="text" id="user-input" placeholder="Ask me anything...">
+            <button onclick="sendMessage()">▶</button>
+        </div>
+    </div>
+    
+    <script>
+        const responses = {
+            'hello': 'Hello! How can I assist you today?',
+  'internship': "We offer internships in Web Dev, Data Analytics, and AI. Apply through the Projects tab.",
+  'tutorials': "Go to Tutorials > Python. Yes, Java tutorials start from beginner level.",
+  'projects': "Advanced projects are tagged red. The calculator project takes ~2 hours.",
+  'navigation': "Use the nav bar at the top. Click 'Contact' or 'Log In'.",
+  'account': "Visit your dashboard after logging in to track and access saved content.",
+  'fallback': "I am not sure about that. Could you please ask something else or be more specific?"
+};
+
+
+const synonyms = {
+    'hello': ['hi', 'hey', 'greetings'],
+  'internship': ['intern', 'internships', 'apply', 'training'],
+  'tutorials': ['python', 'java', 'lessons', 'course', 'tutorial'],
+  'projects': ['project', 'calculator', 'task', 'assignment', 'advanced'],
+  'navigation': ['contact', 'login', 'log in', 'sign in', 'menu'],
+  'account': ['dashboard', 'progress', 'saved', 'profile', 'my account']
+};
+
+        
+        function getIntent(message) {
+            message = message.toLowerCase();
+            for (let intent in synonyms) {
+                if (synonyms[intent].some(word => message.includes(word))) {
+                    return intent;
+                }
+            }
+            return responses[message] ? message : 'fallback';
+        }
+
+        function sendMessage() {
+            let inputField = document.getElementById("user-input");
+            let message = inputField.value.trim().toLowerCase();
+            if (message === "") return;
+            
+            let chatBox = document.getElementById("chat-box");
+            let userMessage = document.createElement("div");
+            userMessage.className = "user-message";
+            userMessage.textContent = message;
+            chatBox.appendChild(userMessage);
+            
+            inputField.value = "";
+            
+            setTimeout(() => {
+                let botMessage = document.createElement("div");
+                botMessage.className = "bot-message";
+                let intent = getIntent(message);
+                botMessage.textContent = responses[intent];
+                chatBox.appendChild(botMessage);
+                chatBox.scrollTop = chatBox.scrollHeight;
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
